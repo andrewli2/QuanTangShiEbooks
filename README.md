@@ -10,6 +10,7 @@ You need to inataall Python2.7 and calibre (https://calibre-ebook.com/download_l
 2.
 example usage: 
 python ./gen.py |tee gen.sh
+
 . ./gen.sh
 
 3.
