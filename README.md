@@ -14,3 +14,5 @@ python ./gen.py |tee gen.sh
 TODO:
 Extract the text to local and correct errors included
 Simplified Chinese version.
+
+Contact: email: andrewli2003@gmail.com
