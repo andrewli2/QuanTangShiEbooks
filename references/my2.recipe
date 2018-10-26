@@ -1,0 +1,58 @@
+#!/usr/bin/python
+# encoding: utf-8
+
+from calibre.web.feeds.recipes import BasicNewsRecipe # 引入 Recipe 基础类
+
+class Wang_Yin_Blog(BasicNewsRecipe): # 继承 BasicNewsRecipe 类的新类名
+
+    #///////////////////
+    # 设置电子书元数据
+    #///////////////////
+    title = '全唐诗-杜甫' # 电子书名
+    description = u'全唐诗-杜甫' # 电子书简介
+    #cover_url = '' # 电子书封面
+    #masthead_url = '' # 页头图片
+    __author__ = '唐-杜甫' # 作者
+    language = 'zh-CN' # 语言
+    encoding = 'gb2312' #'utf-8' # 编码
+
+    #///////////////////
+    # 抓取页面内容设置
+    #///////////////////
+    #keep_only_tags = [{ 'class': 'example' }] # 仅保留指定选择器包含的内容
+    no_stylesheets = True # 去除 CSS 样式
+    remove_javascript = True # 去除 JavaScript 脚本
+    auto_cleanup = True # 自动清理 HTML 代码
+    delay = 5 # 抓取页面间隔秒数
+    max_articles_per_feed = 999 # 抓取文章数量
+
+    #///////////////////
+    # 页面内容解析方法
+    #///////////////////
+    def parse_index(self):
+#        site = 'http://www.shigeku.org/shiku/gs/tangshi/' # 页面列表页
+        site = 'http://www.guoxue.com/qts/qts_sml.htm'
+        soup = self.index_to_soup(site) # 解析列表页返回 BeautifulSoup 对象
+        #links = soup.findAll("li",{"class":"licol4"}) # 获取所有文章链接
+        #            <td bgColor="#F8FCF3" width="69" height="20" valign="top"></a><a href="qts_0011.htm">卷011</a></td>
+        links = soup.findAll("td",{"valign":"top"}) # 获取所有文章链接
+        articles = [] # 定义空文章资源数组：
+        i=0
+        for link in links: # 循环处理所有文章链接
+            #print 'link='+link
+            title = link.a.contents[0].strip() # 提取文章标题
+            title = title.encode("utf-8") #处理中文，转换代码
+            print 'title='+title
+            
+            #http://www.guoxue.com/qts/qts_0001.htm
+            link_base = 'http://www.guoxue.com/qts/'
+            url = link_base + link.a.get("href") # 提取文章链接
+            print 'url='+url
+            a = {'title': title , 'url':url} # 组合标题和链接
+            #print 'a='+a
+            articles.append(a) # 累加到数组中
+            i += 1
+            if i>3:
+                break
+        ans = [(self.title, articles)] # 组成最终的数据结构
+        return ans # 返回可供 Calibre 转换的数据结构
